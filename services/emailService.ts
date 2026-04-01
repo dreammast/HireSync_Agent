@@ -4,16 +4,9 @@ import { ApprovalStatus } from '../types';
  * HireSync Transactional Email Orchestrator
  * Target Node: https://isehlzzcgfrvwwdimybu.supabase.co/functions/v1/send-automated-email
  * 
-<<<<<<< HEAD
  * CRITICAL FIX:
  * Get the correct anon key from: https://supabase.com/dashboard/project/isehlzzcgfrvwwdimybu/settings/api
- * It should start with: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-=======
- * NOTE:
- * The Edge Function now sends mail using Nodemailer + SMTP.
- * Ensure SMTP secrets are configured in Supabase Edge runtime.
->>>>>>> 15debfc (Version 1.2.0)
- */
+ * It should start with: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
 
 // ⚠️ REPLACE THIS WITH YOUR ACTUAL ANON KEY FROM SUPABASE DASHBOARD
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzZWhsenpjZ2Zydnd3ZGlteWJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDc1MzcsImV4cCI6MjA4NDQ4MzUzN30.gNptRWF38XDbiwGS1x1s1HpZZDzM4HgYnqe5OqmJaTU';
@@ -85,24 +78,13 @@ const dispatchBackendEmail = async (payload: any): Promise<InternalSystemRespons
       console.error(`[HireSync-Email] ❌ Node rejected request: ${response.status}`, data);
       
       let diagnostic = '';
-<<<<<<< HEAD
       if (response.status === 500 && data.details?.includes('SendGrid')) {
-        diagnostic = 'SendGrid secrets not configured. Run:\nsupabase secrets set SENDGRID_API_KEY=SG.xxx\nsupabase secrets set SENDGRID_FROM_EMAIL=your@email.com';
-=======
-      if (response.status === 500 && data.details?.includes('SMTP')) {
-        diagnostic = 'SMTP secrets not configured. Run:\nsupabase secrets set SMTP_HOST=smtp.gmail.com\nsupabase secrets set SMTP_PORT=587\nsupabase secrets set SMTP_USER=your@email.com\nsupabase secrets set SMTP_PASS=your-app-password\nsupabase secrets set SMTP_FROM_EMAIL=your@email.com';
->>>>>>> 15debfc (Version 1.2.0)
-      } else if (response.status === 401 || response.status === 403) {
+        diagnostic = 'SendGrid secrets not configured. Run:\nsupabase secrets set SENDGRID_API_KEY=SG.xxx\nsupabase secrets set SENDGRID_FROM_EMAIL=your@email.com';      } else if (response.status === 401 || response.status === 403) {
         diagnostic = 'Authentication failed. Check if your SUPABASE_ANON_KEY is correct in emailService.ts';
       } else if (response.status === 404) {
         diagnostic = 'Edge function not found. Deploy with:\nsupabase functions deploy send-automated-email --no-verify-jwt';
       } else if (response.status === 502) {
-<<<<<<< HEAD
-        diagnostic = data.details || 'SendGrid API failed. Check your API key and from email.';
-=======
-        diagnostic = data.details || 'SMTP provider failed. Check SMTP host, credentials, and sender email.';
->>>>>>> 15debfc (Version 1.2.0)
-      } else {
+        diagnostic = data.details || 'SendGrid API failed. Check your API key and from email.';      } else {
         diagnostic = data.details || responseText || `Server returned ${response.status}`;
       }
 

@@ -4,24 +4,11 @@
 // supabase functions deploy send-automated-email --no-verify-jwt
 //
 // REQUIRED SECRETS:
-<<<<<<< HEAD
 // supabase secrets set SENDGRID_API_KEY=SG.xxx
 // supabase secrets set SENDGRID_FROM_EMAIL=dreammasterorigin@gmail.com
-=======
-// supabase secrets set SMTP_HOST=smtp.gmail.com
-// supabase secrets set SMTP_PORT=587
-// supabase secrets set SMTP_USER=your@email.com
-// supabase secrets set SMTP_PASS=your-app-password
-// supabase secrets set SMTP_FROM_EMAIL=your@email.com
->>>>>>> 15debfc (Version 1.2.0)
-
 declare const Deno: any;
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-<<<<<<< HEAD
-=======
-import nodemailer from "npm:nodemailer@6.9.15"
->>>>>>> 15debfc (Version 1.2.0)
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -55,7 +42,6 @@ serve(async (req: Request) => {
     }
 
     // 3. Secrets Validation
-<<<<<<< HEAD
     const SENDGRID_API_KEY = Deno.env.get('SENDGRID_API_KEY')
     const FROM_EMAIL = Deno.env.get('SENDGRID_FROM_EMAIL')
 
@@ -68,32 +54,7 @@ serve(async (req: Request) => {
         error: "Config Error", 
         details: "SendGrid credentials missing in Deno environment. Run: supabase secrets set SENDGRID_API_KEY=SG.xxx",
         secretsFound: {
-          apiKey: !!SENDGRID_API_KEY,
-=======
-    const SMTP_HOST = Deno.env.get('SMTP_HOST')
-    const SMTP_PORT = Deno.env.get('SMTP_PORT')
-    const SMTP_USER = Deno.env.get('SMTP_USER')
-    const SMTP_PASS_RAW = Deno.env.get('SMTP_PASS')
-    const FROM_EMAIL = Deno.env.get('SMTP_FROM_EMAIL')
-
-    console.log('[Edge Function] SMTP host configured:', !!SMTP_HOST);
-    console.log('[Edge Function] SMTP port configured:', !!SMTP_PORT);
-    console.log('[Edge Function] SMTP user configured:', !!SMTP_USER);
-    console.log('[Edge Function] SMTP pass configured:', !!SMTP_PASS_RAW);
-    console.log('[Edge Function] From Email:', FROM_EMAIL);
-
-    if (!SMTP_HOST || !SMTP_PORT || !SMTP_USER || !SMTP_PASS_RAW || !FROM_EMAIL) {
-      console.error('[Edge Function] Missing SMTP secrets');
-      return new Response(JSON.stringify({ 
-        error: "Config Error", 
-        details: "SMTP credentials missing in Deno environment. Required: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM_EMAIL",
-        secretsFound: {
-          smtpHost: !!SMTP_HOST,
-          smtpPort: !!SMTP_PORT,
-          smtpUser: !!SMTP_USER,
-          smtpPass: !!SMTP_PASS_RAW,
->>>>>>> 15debfc (Version 1.2.0)
-          fromEmail: !!FROM_EMAIL
+          apiKey: !!SENDGRID_API_KEY,          fromEmail: !!FROM_EMAIL
         }
       }), {
         status: 500,
@@ -271,7 +232,6 @@ serve(async (req: Request) => {
       })
     }
 
-<<<<<<< HEAD
     // 4. SendGrid Dispatch
     console.log('[Edge Function] Calling SendGrid API...');
     const sgResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
@@ -294,39 +254,7 @@ serve(async (req: Request) => {
       return new Response(JSON.stringify({ 
         error: "Dispatch Fail", 
         details: err,
-        statusCode: sgResponse.status
-=======
-    // 4. SMTP Dispatch via Nodemailer
-    console.log('[Edge Function] Calling SMTP transport via Nodemailer...');
-    const smtpPort = Number(SMTP_PORT)
-    // Gmail app passwords are often copied with spaces; SMTP auth expects a compact token.
-    const SMTP_PASS = SMTP_PASS_RAW.replace(/\s+/g, '')
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: smtpPort,
-      secure: smtpPort === 465,
-      requireTLS: smtpPort === 587,
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
-      }
-    })
-
-    try {
-      await transporter.sendMail({
-        from: `"HireSync AI" <${FROM_EMAIL}>`,
-        to,
-        subject,
-        html: htmlContent
-      })
-    } catch (smtpError: any) {
-      console.error('[Edge Function] SMTP error:', smtpError);
-      return new Response(JSON.stringify({ 
-        error: "Dispatch Fail", 
-        details: smtpError?.message || 'SMTP provider rejected the request',
-        code: smtpError?.code || 'SMTP_ERROR'
->>>>>>> 15debfc (Version 1.2.0)
-      }), {
+        statusCode: sgResponse.status      }), {
         status: 502,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
