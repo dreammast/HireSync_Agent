@@ -3,7 +3,10 @@ import { JobForm } from './components/JobForm';
 import { CandidateRanking } from './components/CandidateRanking';
 import { CandidateDashboard } from './components/CandidateDashboard';
 import { ManualCandidateForm } from './components/ManualCandidateForm';
+<<<<<<< HEAD
 import { HRLoginForm } from './components/HRLoginForm';
+=======
+>>>>>>> 15debfc (Version 1.2.0)
 import { extractTextFromFile } from './services/fileService';
 import { analyzeResume } from './services/groqService';
 import { sendStatusEmail, pingEmailNode } from './services/emailService';
@@ -11,6 +14,13 @@ import { cloudDb } from './services/cloudDb';
 import { Candidate, ApprovalStatus, UserRole, User, Job } from './types';
 
 const CACHE_KEY = 'hs_v10_';
+<<<<<<< HEAD
+=======
+const HR_ADMIN_EMAIL = 'hr@hiresync.ai';
+const HR_ADMIN_PASSWORD = 'hiresync2026';
+
+type AuthScreen = 'landing' | 'hr-login' | 'candidate-auth';
+>>>>>>> 15debfc (Version 1.2.0)
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -23,10 +33,22 @@ function App() {
   const [systemAlert, setSystemAlert] = useState<{ message: string, suggestion: string, type?: 'error' | 'success' } | null>(null);
 
   // UI state management
+<<<<<<< HEAD
   const [showHRLogin, setShowHRLogin] = useState(false);
   const [showCandidateInput, setShowCandidateInput] = useState(false);
   const [candidateNameInput, setCandidateNameInput] = useState('');
   const [candidateEmailInput, setCandidateEmailInput] = useState('');
+=======
+  const [authScreen, setAuthScreen] = useState<AuthScreen>('landing');
+  const [candidateAuthMode, setCandidateAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [authError, setAuthError] = useState('');
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [hrEmail, setHrEmail] = useState('');
+  const [hrPassword, setHrPassword] = useState('');
+  const [candidateNameInput, setCandidateNameInput] = useState('');
+  const [candidateEmailInput, setCandidateEmailInput] = useState('');
+  const [candidatePasswordInput, setCandidatePasswordInput] = useState('');
+>>>>>>> 15debfc (Version 1.2.0)
   const [candidatePhoneInput, setCandidatePhoneInput] = useState('');
   const [hrJobFilter, setHrJobFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -132,6 +154,7 @@ function App() {
   const addJob = (job: Job) => dispatch([...jobs, job], candidates, registeredUsers);
   const deleteJob = (id: string) => dispatch(jobs.filter(j => j.id !== id), candidates, registeredUsers);
 
+<<<<<<< HEAD
   const registerNewCandidate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!candidateNameInput.trim() || !candidateEmailInput.trim() || !candidatePhoneInput.trim()) return;
@@ -141,15 +164,51 @@ function App() {
       name: candidateNameInput,
       email: candidateEmailInput,
       phone: candidatePhoneInput,
+=======
+  const registerNewCandidate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    if (!candidateNameInput.trim() || !candidateEmailInput.trim() || !candidatePasswordInput.trim() || !candidatePhoneInput.trim()) {
+      setAuthError('All fields are required.');
+      return;
+    }
+
+    const normalizedEmail = candidateEmailInput.trim().toLowerCase();
+    const exists = registeredUsers.some(u => u.email?.toLowerCase() === normalizedEmail);
+    if (exists) {
+      setAuthError('An account already exists for this email.');
+      return;
+    }
+
+    setIsAuthenticating(true);
+    const newUser: User = {
+      id: 'uid-' + Math.random().toString(36).substr(2, 9),
+      role: UserRole.CANDIDATE,
+      name: candidateNameInput.trim(),
+      email: normalizedEmail,
+      authPassword: candidatePasswordInput,
+      phone: candidatePhoneInput.trim(),
+>>>>>>> 15debfc (Version 1.2.0)
       portalCreated: Date.now(),
       lastActive: Date.now(),
       emailVerified: false
     };
     setCurrentUser(newUser);
     localStorage.setItem(CACHE_KEY + 'session', JSON.stringify(newUser));
+<<<<<<< HEAD
     dispatch(jobs, candidates, [...registeredUsers, newUser]);
     setCandidateNameInput(''); setCandidateEmailInput(''); setCandidatePhoneInput('');
     setShowCandidateInput(false);
+=======
+    await dispatch(jobs, candidates, [...registeredUsers, newUser]);
+    setCandidateNameInput('');
+    setCandidateEmailInput('');
+    setCandidatePasswordInput('');
+    setCandidatePhoneInput('');
+    setCandidateAuthMode('signin');
+    setAuthScreen('landing');
+    setIsAuthenticating(false);
+>>>>>>> 15debfc (Version 1.2.0)
   };
 
   const updateUserProfile = (updatedUser: User) => {
@@ -167,10 +226,74 @@ function App() {
   const logout = () => {
     setCurrentUser(null);
     localStorage.removeItem(CACHE_KEY + 'session');
+<<<<<<< HEAD
     setShowHRLogin(false);
     setHrJobFilter(null);
   };
 
+=======
+    setAuthScreen('landing');
+    setHrEmail('');
+    setHrPassword('');
+    setCandidateEmailInput('');
+    setCandidatePasswordInput('');
+    setCandidatePhoneInput('');
+    setAuthError('');
+    setHrJobFilter(null);
+  };
+
+  const handleHrLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setIsAuthenticating(true);
+    await new Promise(resolve => setTimeout(resolve, 250));
+
+    if (hrEmail.trim().toLowerCase() === HR_ADMIN_EMAIL && hrPassword === HR_ADMIN_PASSWORD) {
+      const admin: User = { id: 'admin-hr', role: UserRole.HR, name: 'HR Admin', email: HR_ADMIN_EMAIL };
+      setCurrentUser(admin);
+      localStorage.setItem(CACHE_KEY + 'session', JSON.stringify(admin));
+      setAuthScreen('landing');
+      setHrEmail('');
+      setHrPassword('');
+    } else {
+      setAuthError('Invalid HR credentials.');
+    }
+    setIsAuthenticating(false);
+  };
+
+  const handleCandidateSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setIsAuthenticating(true);
+    await new Promise(resolve => setTimeout(resolve, 250));
+
+    const normalizedEmail = candidateEmailInput.trim().toLowerCase();
+    const user = registeredUsers.find(u => u.role === UserRole.CANDIDATE && u.email?.toLowerCase() === normalizedEmail);
+    if (!user) {
+      setAuthError('Invalid candidate email or password.');
+      setIsAuthenticating(false);
+      return;
+    }
+
+    // Backward compatibility: existing candidate accounts from old flow may not have authPassword yet.
+    if (user.authPassword && user.authPassword !== candidatePasswordInput) {
+      setAuthError('Invalid candidate email or password.');
+      setIsAuthenticating(false);
+      return;
+    }
+
+    const signedInUser: User = { ...user, authPassword: user.authPassword || candidatePasswordInput, lastActive: Date.now() };
+    setCurrentUser(signedInUser);
+    localStorage.setItem(CACHE_KEY + 'session', JSON.stringify(signedInUser));
+    const updatedUsers = registeredUsers.map(u => u.id === signedInUser.id ? signedInUser : u);
+    await dispatch(jobs, candidates, updatedUsers);
+    setCandidateEmailInput('');
+    setCandidatePasswordInput('');
+    setAuthScreen('landing');
+    setIsAuthenticating(false);
+  };
+
+>>>>>>> 15debfc (Version 1.2.0)
   const verifyEmailNode = async () => {
     setEmailNodeStatus('verifying');
     setSystemAlert({
@@ -220,7 +343,11 @@ function App() {
         setSystemAlert({
           type: 'success',
           message: `✅ Test email sent to ${testEmail}`,
+<<<<<<< HEAD
           suggestion: `Check your inbox and spam folder at ${testEmail}. If you don't receive it within 2 minutes, check SendGrid activity logs.`
+=======
+          suggestion: `Check your inbox and spam folder at ${testEmail}. If you don't receive it within 2 minutes, check your SMTP provider logs.`
+>>>>>>> 15debfc (Version 1.2.0)
         });
         setTimeout(() => setSystemAlert(null), 12000);
 
@@ -234,7 +361,11 @@ function App() {
         setSystemAlert({
           type: 'error',
           message: `❌ Test email failed: ${result.error}`,
+<<<<<<< HEAD
           suggestion: result.diagnostic || 'Check SendGrid configuration'
+=======
+          suggestion: result.diagnostic || 'Check SMTP configuration'
+>>>>>>> 15debfc (Version 1.2.0)
         });
       }
     } catch (error: any) {
@@ -369,7 +500,11 @@ function App() {
           setSystemAlert({
             type: 'success',
             message: `✅ Email delivered to ${candidateEmail}`,
+<<<<<<< HEAD
             suggestion: `Check inbox (and spam folder) at ${candidateEmail}. Email sent via SendGrid.`
+=======
+            suggestion: `Check inbox (and spam folder) at ${candidateEmail}. Email sent via SMTP.`
+>>>>>>> 15debfc (Version 1.2.0)
           });
           setTimeout(() => setSystemAlert(null), 8000);
 
@@ -385,7 +520,11 @@ function App() {
           setSystemAlert({
             type: 'error',
             message: `❌ Email failed: ${result.error}`,
+<<<<<<< HEAD
             suggestion: result.diagnostic || "Check SendGrid configuration and Edge Function deployment."
+=======
+            suggestion: result.diagnostic || "Check SMTP configuration and Edge Function deployment."
+>>>>>>> 15debfc (Version 1.2.0)
           });
           console.error('[App] ❌ Email send failed:', result);
         }
@@ -507,6 +646,7 @@ function App() {
 
   if (!currentUser) {
     return (
+<<<<<<< HEAD
       <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6">
         <div className="max-w-6xl w-full">
           {showHRLogin && <HRLoginForm onLogin={() => {
@@ -556,6 +696,85 @@ function App() {
               </div>
             )}
           </div>
+=======
+      <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 flex items-center justify-center p-6">
+        <div className="max-w-5xl w-full animate-in fade-in duration-700">
+          <div className="text-center mb-12">
+            <h1 className="text-6xl md:text-7xl font-black text-slate-900 tracking-tight">HireSync <span className="text-blue-600">AI</span></h1>
+            <p className="text-slate-500 text-lg font-medium mt-3">Simple role-based access for HR and candidates.</p>
+          </div>
+
+          {authScreen === 'landing' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <button
+                onClick={() => { setAuthScreen('hr-login'); setAuthError(''); }}
+                className="bg-white border border-slate-200 p-10 rounded-3xl text-left transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-200/70"
+              >
+                <div className="h-14 w-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 transition-all">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2-2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                </div>
+                <h3 className="text-3xl font-black text-slate-900">HR Console</h3>
+                <p className="text-slate-500 mt-2 font-medium">HR login with email and password.</p>
+              </button>
+
+              <button
+                onClick={() => { setAuthScreen('candidate-auth'); setCandidateAuthMode('signin'); setAuthError(''); }}
+                className="bg-white border border-slate-200 p-10 rounded-3xl text-left transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-slate-200/70"
+              >
+                <div className="h-14 w-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-6 transition-all">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A8 8 0 1118.88 6.197M15 11a3 3 0 11-6 0 3 3 0 016 0zm6 9a8.959 8.959 0 00-9-5 8.959 8.959 0 00-9 5" /></svg>
+                </div>
+                <h3 className="text-3xl font-black text-slate-900">Candidate Phase</h3>
+                <p className="text-slate-500 mt-2 font-medium">Candidate sign in or sign up.</p>
+              </button>
+            </div>
+          )}
+
+          {authScreen === 'hr-login' && (
+            <div className="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <h2 className="text-2xl font-black text-slate-900 mb-1">HR Login</h2>
+              <p className="text-sm text-slate-500 mb-6">Enter HR email and password.</p>
+              <form onSubmit={handleHrLogin} className="space-y-4">
+                <input type="email" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-blue-500 transition-all" placeholder="Email" value={hrEmail} onChange={e => setHrEmail(e.target.value)} required />
+                <input type="password" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-blue-500 transition-all" placeholder="Password" value={hrPassword} onChange={e => setHrPassword(e.target.value)} required />
+                {authError && <p className="text-sm text-red-600 font-semibold">{authError}</p>}
+                <button type="submit" disabled={isAuthenticating} className="w-full py-4 bg-slate-900 text-white font-black rounded-xl hover:bg-blue-600 transition-all disabled:opacity-60">{isAuthenticating ? 'Signing in...' : 'Sign In'}</button>
+                <button type="button" onClick={() => { setAuthScreen('landing'); setAuthError(''); }} className="w-full py-2 text-slate-500 font-semibold hover:text-slate-900 transition-colors">Back</button>
+              </form>
+            </div>
+          )}
+
+          {authScreen === 'candidate-auth' && (
+            <div className="max-w-md mx-auto bg-white border border-slate-200 rounded-3xl p-8 shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex bg-slate-100 rounded-xl p-1 mb-6">
+                <button onClick={() => { setCandidateAuthMode('signin'); setAuthError(''); }} className={`flex-1 py-2 rounded-lg text-sm font-black transition-all ${candidateAuthMode === 'signin' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}>Sign In</button>
+                <button onClick={() => { setCandidateAuthMode('signup'); setAuthError(''); }} className={`flex-1 py-2 rounded-lg text-sm font-black transition-all ${candidateAuthMode === 'signup' ? 'bg-white shadow text-slate-900' : 'text-slate-500 hover:text-slate-900'}`}>Sign Up</button>
+              </div>
+
+              {candidateAuthMode === 'signin' ? (
+                <form onSubmit={handleCandidateSignIn} className="space-y-4 animate-in fade-in duration-300">
+                  <h2 className="text-2xl font-black text-slate-900">Candidate Sign In</h2>
+                  <input type="email" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-indigo-500 transition-all" placeholder="Email" value={candidateEmailInput} onChange={e => setCandidateEmailInput(e.target.value)} required />
+                  <input type="password" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-indigo-500 transition-all" placeholder="Password" value={candidatePasswordInput} onChange={e => setCandidatePasswordInput(e.target.value)} required />
+                  {authError && <p className="text-sm text-red-600 font-semibold">{authError}</p>}
+                  <button type="submit" disabled={isAuthenticating} className="w-full py-4 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-60">{isAuthenticating ? 'Signing in...' : 'Sign In'}</button>
+                </form>
+              ) : (
+                <form onSubmit={registerNewCandidate} className="space-y-4 animate-in fade-in duration-300">
+                  <h2 className="text-2xl font-black text-slate-900">Candidate Sign Up</h2>
+                  <input className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-indigo-500 transition-all" placeholder="Full Name" value={candidateNameInput} onChange={e => setCandidateNameInput(e.target.value)} required />
+                  <input type="email" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-indigo-500 transition-all" placeholder="Email" value={candidateEmailInput} onChange={e => setCandidateEmailInput(e.target.value)} required />
+                  <input type="tel" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-indigo-500 transition-all" placeholder="Phone Number" value={candidatePhoneInput} onChange={e => setCandidatePhoneInput(e.target.value)} required />
+                  <input type="password" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl font-semibold outline-none focus:border-indigo-500 transition-all" placeholder="Password" value={candidatePasswordInput} onChange={e => setCandidatePasswordInput(e.target.value)} required />
+                  {authError && <p className="text-sm text-red-600 font-semibold">{authError}</p>}
+                  <button type="submit" disabled={isAuthenticating} className="w-full py-4 bg-indigo-600 text-white font-black rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-60">{isAuthenticating ? 'Creating account...' : 'Create Account'}</button>
+                </form>
+              )}
+
+              <button type="button" onClick={() => { setAuthScreen('landing'); setAuthError(''); }} className="w-full py-2 text-slate-500 font-semibold hover:text-slate-900 transition-colors mt-4">Back</button>
+            </div>
+          )}
+>>>>>>> 15debfc (Version 1.2.0)
         </div>
       </div>
     );

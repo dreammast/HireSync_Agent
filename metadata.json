@@ -1,0 +1,5 @@
+{
+  "name": "HireSync Agent",
+  "description": "An advanced AI-driven hiring assistant that ranks candidate resumes against job descriptions using Gemini 3.0, featuring skill extraction, weighted scoring, and human-in-the-loop approval workflows.",
+  "requestFramePermissions": []
+}

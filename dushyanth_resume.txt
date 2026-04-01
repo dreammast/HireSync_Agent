@@ -1,0 +1,71 @@
+DUSHYANTH NALE
+Machine Learning Engineer
+
+Contact Information:
+Email: dushyanth.nale@email.com
+Phone: +91-9876543210
+Location: Bangalore, India
+LinkedIn: linkedin.com/in/dushyanthnale
+
+PROFESSIONAL SUMMARY
+Experienced Machine Learning Engineer with 5+ years of expertise in developing and deploying ML models, deep learning algorithms, and AI solutions. Proficient in Python, TensorFlow, PyTorch, and cloud platforms. Strong background in computer vision, NLP, and predictive analytics.
+
+TECHNICAL SKILLS
+- Programming Languages: Python, R, Java, SQL
+- ML/DL Frameworks: TensorFlow, PyTorch, Keras, Scikit-learn
+- Cloud Platforms: AWS (SageMaker, EC2, S3), Google Cloud Platform, Azure ML
+- Tools & Technologies: Docker, Kubernetes, Git, MLflow, Apache Spark
+- Specializations: Computer Vision, Natural Language Processing, Time Series Analysis
+- Databases: PostgreSQL, MongoDB, Redis
+
+PROFESSIONAL EXPERIENCE
+
+Senior Machine Learning Engineer | Tech Innovations Inc. | 2021 - Present
+- Developed and deployed 15+ ML models for production, improving business metrics by 40%
+- Led a team of 4 ML engineers in building a recommendation system serving 2M+ users
+- Implemented MLOps pipelines using Kubernetes and Docker, reducing deployment time by 60%
+- Built computer vision models for object detection with 95% accuracy using YOLO and ResNet
+- Optimized model inference time by 70% through model quantization and pruning techniques
+
+Machine Learning Engineer | DataTech Solutions | 2019 - 2021
+- Created NLP models for sentiment analysis and text classification with 92% accuracy
+- Developed time series forecasting models for demand prediction, reducing inventory costs by 25%
+- Implemented A/B testing frameworks for model evaluation and continuous improvement
+- Collaborated with cross-functional teams to integrate ML solutions into production systems
+- Conducted data analysis and feature engineering on datasets with 10M+ records
+
+EDUCATION
+Master of Science in Computer Science (Specialization: Machine Learning)
+Indian Institute of Technology, Bangalore | 2017 - 2019
+CGPA: 8.9/10
+
+Bachelor of Technology in Computer Science and Engineering
+National Institute of Technology, Warangal | 2013 - 2017
+CGPA: 8.5/10
+
+CERTIFICATIONS
+- AWS Certified Machine Learning - Specialty
+- TensorFlow Developer Certificate
+- Deep Learning Specialization (Coursera - Andrew Ng)
+
+PROJECTS
+1. Real-time Object Detection System
+   - Built an end-to-end object detection pipeline using YOLOv5 and deployed on AWS
+   - Achieved 30 FPS processing speed with 94% mAP on custom dataset
+
+2. Chatbot with NLP
+   - Developed an intelligent chatbot using BERT and transformers
+   - Integrated with customer service platform, handling 1000+ queries daily
+
+3. Predictive Maintenance System
+   - Created ML models to predict equipment failures with 88% accuracy
+   - Reduced downtime by 35% and maintenance costs by $500K annually
+
+PUBLICATIONS
+- "Advanced Techniques in Deep Learning for Computer Vision" - IEEE Conference 2022
+- "Optimizing Neural Networks for Edge Devices" - Journal of AI Research 2021
+
+ACHIEVEMENTS
+- Winner of company-wide ML Hackathon 2022
+- Published 3 research papers in top-tier AI conferences
+- Mentored 10+ junior engineers in ML best practices
