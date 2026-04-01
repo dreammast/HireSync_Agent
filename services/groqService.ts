@@ -1,10 +1,16 @@
 import Groq from "groq-sdk";
 import { CandidateAnalysis, Candidate } from "../types";
 
-const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
-    dangerouslyAllowBrowser: true // Required for client-side usage
-});
+function getGroqClient() {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+        throw new Error("Missing GROQ_API_KEY. Set it in Vercel Environment Variables and redeploy.");
+    }
+    return new Groq({
+        apiKey,
+        dangerouslyAllowBrowser: true
+    });
+}
 
 export const analyzeResume = async (
     jobDescription: string,
@@ -12,6 +18,7 @@ export const analyzeResume = async (
     historicalFeedback?: Candidate[]
 ): Promise<CandidateAnalysis> => {
     try {
+        const groq = getGroqClient();
         const feedbackContext = historicalFeedback && historicalFeedback.length > 0
             ? `FEEDBACK FROM PREVIOUS ANALYSES: ${historicalFeedback.map(c => `${c.name}: ${c.feedback}`).join('\n')}`
             : "";
