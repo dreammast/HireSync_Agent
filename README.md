@@ -215,7 +215,7 @@ _Add screenshot here_
 
 ---
 
-## 👩‍💻 Author
+<!--## 👩‍💻 Author
 
 **Vineela Vinjam**
 
@@ -225,7 +225,7 @@ _Add screenshot here_
 
 💻 GitHub: https://github.com/vineelavinjam-19
 
----
+--- -->
 
 ## ⭐ Support
 
